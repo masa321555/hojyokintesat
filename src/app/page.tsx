@@ -6,8 +6,6 @@ import SubsidyCard from '@/components/SubsidyCard';
 import Pagination from '@/components/Pagination';
 import { useSubsidies } from '@/hooks/useSubsidies';
 import { SearchFilters } from '@/types/subsidy';
-import { FileText, Download, BookOpen } from 'lucide-react';
-import Link from 'next/link';
 
 export default function HomePage() {
   const [filters, setFilters] = useState<SearchFilters>({});
@@ -40,29 +38,6 @@ export default function HomePage() {
             <h1 className="text-xl font-bold text-gray-900">
               東京都補助金検索システム
             </h1>
-            <nav className="flex items-center gap-6">
-              <Link
-                href="/"
-                className="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2"
-              >
-                <FileText className="h-4 w-4" />
-                補助金を探す
-              </Link>
-              <Link
-                href="/about"
-                className="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2"
-              >
-                <BookOpen className="h-4 w-4" />
-                補助金の説明
-              </Link>
-              <Link
-                href="/download"
-                className="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2"
-              >
-                <Download className="h-4 w-4" />
-                一覧ダウンロード
-              </Link>
-            </nav>
           </div>
         </div>
       </header>
