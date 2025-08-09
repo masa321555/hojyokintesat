@@ -3,13 +3,14 @@ import { loadSubsidies } from '@/lib/csv-loader';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // CSVデータを読み込み
     const subsidies = await loadSubsidies();
+    const { id } = await params;
 
-    const subsidy = subsidies.find(s => s.id === params.id);
+    const subsidy = subsidies.find(s => s.id === id);
 
     if (!subsidy) {
       return NextResponse.json(
