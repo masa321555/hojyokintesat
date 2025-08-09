@@ -4,4 +4,3 @@
     "@typescript-eslint/no-explicit-any": "off"
   }
 }
-EOF < /dev/null
