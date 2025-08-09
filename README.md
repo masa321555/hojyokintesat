@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 東京都補助金検索システム
 
-## Getting Started
+東京都および関連団体が提供する各種補助金・助成金情報を一元的に検索・閲覧できるWebアプリケーションです。
 
-First, run the development server:
+## 機能
 
+- **検索機能**: キーワード、利用者区分、施策分野による絞り込み検索
+- **一覧表示**: 検索結果の一覧表示とページネーション
+- **詳細表示**: 各補助金の詳細情報表示
+- **レスポンシブデザイン**: PC・タブレット・スマートフォンに対応
+
+## 技術スタック
+
+- **フロントエンド**: Next.js 15, React 19, TypeScript
+- **スタイリング**: Tailwind CSS
+- **データ取得**: React Query
+- **アイコン**: Lucide React
+
+## セットアップ
+
+1. 依存関係のインストール
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. 開発サーバーの起動
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. ブラウザで http://localhost:3000 にアクセス
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## プロジェクト構成
 
-## Learn More
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API Routes
+│   │   └── subsidies/     # 補助金検索API
+│   ├── subsidies/[id]/    # 補助金詳細ページ
+│   └── page.tsx           # トップページ
+├── components/            # Reactコンポーネント
+│   ├── SearchForm.tsx     # 検索フォーム
+│   ├── SubsidyCard.tsx    # 補助金カード
+│   └── Pagination.tsx     # ページネーション
+├── hooks/                 # カスタムフック
+│   └── useSubsidies.ts    # 補助金データ取得フック
+├── lib/                   # ユーティリティ関数
+│   ├── csv-parser.ts      # CSVパーサー
+│   └── search.ts          # 検索ロジック
+└── types/                 # TypeScript型定義
+    └── subsidy.ts         # 補助金関連の型定義
+```
 
-To learn more about Next.js, take a look at the following resources:
+## データソース
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+補助金データは`public/data/hojokin2024.csv`から読み込まれます。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 今後の拡張予定
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 多言語対応（日本語・英語）
+- AI/チャットボットによる補助金推薦機能
+- 申請書類作成支援機能
+- メール通知機能（新着・締切アラート）

@@ -1,103 +1,135 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState } from 'react';
+import SearchForm from '@/components/SearchForm';
+import SubsidyCard from '@/components/SubsidyCard';
+import Pagination from '@/components/Pagination';
+import { useSubsidies } from '@/hooks/useSubsidies';
+import { SearchFilters } from '@/types/subsidy';
+import { FileText, Download, BookOpen } from 'lucide-react';
+import Link from 'next/link';
+
+export default function HomePage() {
+  const [filters, setFilters] = useState<SearchFilters>({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasSearched, setHasSearched] = useState(false);
+  
+  const { data, isLoading, error } = useSubsidies({
+    filters,
+    page: currentPage,
+    pageSize: 20,
+  });
+
+  const handleSearch = (newFilters: SearchFilters) => {
+    console.log('Search triggered with filters:', newFilters);
+    setFilters(newFilters);
+    setCurrentPage(1);
+    setHasSearched(true);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <h1 className="text-xl font-bold text-gray-900">
+              東京都補助金検索システム
+            </h1>
+            <nav className="flex items-center gap-6">
+              <Link
+                href="/"
+                className="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2"
+              >
+                <FileText className="h-4 w-4" />
+                補助金を探す
+              </Link>
+              <Link
+                href="/about"
+                className="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2"
+              >
+                <BookOpen className="h-4 w-4" />
+                補助金の説明
+              </Link>
+              <Link
+                href="/download"
+                className="text-gray-700 hover:text-gray-900 font-medium flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                一覧ダウンロード
+              </Link>
+            </nav>
+          </div>
         </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-8 relative z-10">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">補助金を検索</h2>
+          <SearchForm onSearch={handleSearch} />
+        </div>
+
+        {isLoading && (
+          <div className="text-center py-12">
+            <div className="inline-flex items-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <span className="ml-2">検索中...</span>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+            エラーが発生しました。再度お試しください。
+          </div>
+        )}
+
+        {!hasSearched && !isLoading && (
+          <div className="text-center py-12">
+            <div className="text-gray-600">
+              <p className="text-lg mb-2">補助金を検索してください</p>
+              <p className="text-sm">上記の検索フォームから条件を指定して検索ボタンをクリックしてください。</p>
+            </div>
+          </div>
+        )}
+
+        {hasSearched && data && (
+          <>
+            <div className="mb-4">
+              <p className="text-gray-700">
+                検索結果: <span className="font-bold">{data.totalCount}</span> 件
+              </p>
+            </div>
+
+            {data.subsidies.length === 0 ? (
+              <div className="bg-gray-50 rounded-lg p-8 text-center">
+                <p className="text-gray-600">該当する補助金が見つかりませんでした。</p>
+                <p className="text-gray-600 mt-2">検索条件を変更してお試しください。</p>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                  {data.subsidies.map((subsidy) => (
+                    <SubsidyCard key={subsidy.id} subsidy={subsidy} />
+                  ))}
+                </div>
+
+                <div className="flex justify-center">
+                  <Pagination
+                    currentPage={data.currentPage}
+                    totalPages={data.totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              </>
+            )}
+          </>
+        )}
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
