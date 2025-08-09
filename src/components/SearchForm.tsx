@@ -10,7 +10,6 @@ interface SearchFormProps {
 
 const targetOptions = [
   { value: '1', label: '区市町村' },
-  { value: '2', label: '企業・個人事業主' },
   { value: '3', label: '医療・福祉関係者' },
   { value: '4', label: 'その他民間団体' },
   { value: '5', label: '民間団体' },
