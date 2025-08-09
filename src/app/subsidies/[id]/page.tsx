@@ -6,11 +6,12 @@ import { loadSubsidies } from '@/lib/csv-loader';
 export default async function SubsidyDetailPage({
   params
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
   // サーバーサイドでデータを取得
   const subsidies = await loadSubsidies();
-  const subsidy = subsidies.find(s => s.id === params.id);
+  const { id } = await params;
+  const subsidy = subsidies.find(s => s.id === id);
 
   if (!subsidy) {
     notFound();
